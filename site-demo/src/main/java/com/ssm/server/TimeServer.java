@@ -16,10 +16,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * @Date: 2020/3/7 15:35
  */
 
-public class DiscardServer {
+public class TimeServer {
 	private int port;
 
-	public DiscardServer(int port) {
+	public TimeServer(int port) {
 		this.port = port;
 	}
 
@@ -33,12 +33,13 @@ public class DiscardServer {
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(new DiscardServerHandler());
+							ch.pipeline().addLast(new TimeServerHandler());
 						}
 					})
 					.option(ChannelOption.SO_BACKLOG, 128)
 					.childOption(ChannelOption.SO_KEEPALIVE, true);
 			ChannelFuture future = b.bind(port).sync();
+			System.out.println("Time Server Start....");
 			future.channel().closeFuture().sync();
 		}finally {
 			bossGroup.shutdownGracefully();
@@ -47,10 +48,10 @@ public class DiscardServer {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		int port = 8080;
+		int port = 8081;
 		if (args.length > 0) {
 			port = Integer.parseInt(args[0]);
 		}
-		new DiscardServer(port).run();
+		new TimeServer(port).run();
 	}
 }
